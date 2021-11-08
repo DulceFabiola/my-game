@@ -1,0 +1,9 @@
+canvas {
+  display: flex;
+  margin: 0 auto;
+}
+#start-game-button {
+  text-align: center;
+  display: flex;
+  margin: 0 auto 30px;
+}
