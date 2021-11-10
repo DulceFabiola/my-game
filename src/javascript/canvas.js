@@ -206,9 +206,6 @@ function update() {
 
 function gameOver() {
   if (isGameOver) {
-    // boardGameOver.draw();
-    // isGameOver = false;
-    // clearInterval(intervalId);
     boardGameOver.shootSound();
     boardGameOver.draw();
     setTimeout(() => {
@@ -219,7 +216,7 @@ function gameOver() {
 // Funciones de apoyo
 
 function checkCollitions() {
-  kids.forEach((kid) => {
+  kids.forEach((kid, i) => {
     if (monsterCanvas.isTouching(kid)) {
       clearInterval(intervalId);
       isGameOver = true;
@@ -230,6 +227,7 @@ function checkCollitions() {
         if (scare.isTouching(kid)) {
           console.log("isTouching kid");
           //kidCanvas.receiveDamage(scare.attack());
+          kids.splice(i, 1);
         }
       });
     }
