@@ -3,10 +3,12 @@ const context = canvas.getContext("2d");
 const startGameButton = document.getElementById("start-game-button");
 const monsterButton = document.getElementById("monster-button");
 // Definir variables globales
+let intervalId;
 let frames = 0;
 const kids = [];
 const monsterScareArray = [];
 let raton = {}; // las coordenadas del ratón
+let isGameOver = false;
 class GameAsset {
   constructor(x, y, width, height, img) {
     this.x = x;
@@ -22,8 +24,10 @@ class GameAsset {
   }
 }
 class Board extends GameAsset {
-  constructor(x, y, width, height, img) {
+  constructor(x, y, width, height, img, audio) {
     super(x, y, width, height, img);
+    this.audio = new Audio();
+    this.audio.src = audio;
   }
 
   draw() {
@@ -37,6 +41,11 @@ class Board extends GameAsset {
       this.width,
       this.height
     );
+  }
+
+  shootSound() {
+    this.audio.volume = 0.2;
+    this.audio.play();
   }
 }
 
@@ -124,16 +133,18 @@ class Scare extends Character {
 }
 // Instancias
 const boardImage = "https://opengameart.org/sites/default/files/Brick_03.png";
-const monsterImage = "../../images/mike.png";
-const kidImage = "../../images/boo.png";
-const kidCoin = "../../images/kid-coin.png";
-const monsterIcon = "../../images/monster-coin.png";
-const energyIcon = "../../images/energy-icon.png";
-const alert = "../../images/3312.png";
-const scareIcon = "../../images/sully-icon.png";
+const gameOverImage = "/images/game-over.jpg";
+const monsterImage = "/images/mike.png";
+const kidImage = "/images/boo.png";
+const kidCoin = "/images/kid-coin.png";
+const monsterIcon = "/images/monster-coin.png";
+const energyIcon = "/images/energy-icon.png";
+const alert = "/images/3312.png";
+const scareIcon = "/images/sully-icon.png";
 const scareAudio = "../../sounds/grito-mounstruo.mp3";
 const gatitoAudio = "../../sounds/boo-gatito.mp3";
 const mikeAudio = "../../sounds/mike-wazowski.mp3";
+const gameOverAudio = "../../sounds/musical-game-over.wav";
 let monsterCanvas = new Character(
   0,
   canvas.height / 2,
@@ -144,12 +155,31 @@ let monsterCanvas = new Character(
   5
 );
 let kidCanvas = new Kid(1100, 0, 100, 100, kidImage, 5, 5);
-const board = new Board(0, 0, canvas.width, canvas.height, boardImage);
+const board = new Board(
+  0,
+  0,
+  canvas.width,
+  canvas.height,
+  boardImage,
+  gatitoAudio
+);
+const boardGameOver = new Board(
+  0,
+  0,
+  canvas.width,
+  canvas.height,
+  gameOverImage,
+  gameOverAudio
+);
 const resourcesMonster = new GameAsset(30, 10, 80, 80, monsterIcon);
 const resourcesEnergy = new GameAsset(180, 10, 80, 80, energyIcon);
 const alertKid = new GameAsset(320, 10, 80, 80, alert);
 // funciones principales
 function start() {
+  if (intervalId) return;
+  // intervalId = setInterval(() => {
+  //   update();
+  // }, 1000);
   update();
 }
 
@@ -168,24 +198,38 @@ function update() {
   resourcesMonster.draw();
   resourcesEnergy.draw();
   alertKid.draw();
+  gameOver();
   requestAnimationFrame(update);
-
   //Inicia el grito
   printScares();
 }
 
+function gameOver() {
+  if (isGameOver) {
+    // boardGameOver.draw();
+    // isGameOver = false;
+    // clearInterval(intervalId);
+    boardGameOver.shootSound();
+    boardGameOver.draw();
+    setTimeout(() => {
+      document.location.reload();
+    }, 5000);
+  }
+}
 // Funciones de apoyo
 
 function checkCollitions() {
   kids.forEach((kid) => {
     if (monsterCanvas.isTouching(kid)) {
+      clearInterval(intervalId);
+      isGameOver = true;
       console.log("3312");
-      monsterCanvas.receiveDamage(kidCanvas.attack());
+      //monsterCanvas.receiveDamage(kidCanvas.attack());
     } else {
       monsterScareArray.forEach((scare) => {
         if (scare.isTouching(kid)) {
           console.log("isTouching kid");
-          kidCanvas.receiveDamage(scare.attack());
+          //kidCanvas.receiveDamage(scare.attack());
         }
       });
     }
@@ -193,11 +237,15 @@ function checkCollitions() {
 }
 
 function generateKids() {
-  if (frames % 500 === 0) {
+  if (frames % 300 === 0) {
     const y = Math.floor(Math.random() * 380);
     let kid = new Kid(1100, y, 100, 100, kidImage);
     kids.push(kid);
   }
+  // Nos aseguramos de solo tener los kids que se muestran en pantalla
+  kids.forEach((kid, index) => {
+    if (kid.x + kid.width < 0) kids.splice(1, index);
+  });
 }
 
 function drawKids() {
@@ -216,7 +264,7 @@ function checkKeys() {
       case "ArrowRight":
         monsterCanvas.moveRight();
         break;
-      case " ":
+      case "q":
         const monsterScare = new Scare(
           0,
           canvas.height / 2,
@@ -244,8 +292,9 @@ function generateMonster() {
 }
 // Interaccion de usuarios
 
-//startGameButton.onclick = start;
-start();
+startGameButton.onclick = start;
+//start();
+
 //Detectar click dentro del canvas
 canvas.addEventListener("click", (event) => {
   const raton = oMousePos(canvas, event);
