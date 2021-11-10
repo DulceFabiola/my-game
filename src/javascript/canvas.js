@@ -9,6 +9,8 @@ const kids = [];
 const monsterScareArray = [];
 let raton = {}; // las coordenadas del ratón
 let isGameOver = false;
+let points = 0;
+let monsterLife = 0;
 class GameAsset {
   constructor(x, y, width, height, img) {
     this.x = x;
@@ -177,9 +179,6 @@ const alertKid = new GameAsset(320, 10, 80, 80, alert);
 // funciones principales
 function start() {
   if (intervalId) return;
-  // intervalId = setInterval(() => {
-  //   update();
-  // }, 1000);
   update();
 }
 
@@ -202,6 +201,7 @@ function update() {
   requestAnimationFrame(update);
   //Inicia el grito
   printScares();
+  printScore();
 }
 
 function gameOver() {
@@ -223,11 +223,13 @@ function checkCollitions() {
       console.log("3312");
       //monsterCanvas.receiveDamage(kidCanvas.attack());
     } else {
-      monsterScareArray.forEach((scare) => {
+      monsterScareArray.forEach((scare, index) => {
         if (scare.isTouching(kid)) {
           console.log("isTouching kid");
           //kidCanvas.receiveDamage(scare.attack());
           kids.splice(i, 1);
+          monsterScareArray.splice(index, 1);
+          points += 25;
         }
       });
     }
@@ -283,6 +285,11 @@ function checkKeys() {
 }
 function printScares() {
   monsterScareArray.forEach((monsterScare) => monsterScare.draw());
+}
+
+function printScore() {
+  context.font = "20px sans-serif";
+  context.fillText(`SCORE:${points} W`, 160, 100);
 }
 
 function generateMonster() {
