@@ -1,3 +1,9 @@
+body {
+  background-image: url("https://i.pinimg.com/originals/c5/a1/be/c5a1be078020956ea40f933fef73d0c0.jpg");
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: cover;
+}
 canvas {
   display: flex;
   margin: 0 auto;
@@ -7,9 +13,10 @@ canvas {
   display: flex;
   margin: 0 auto 30px;
 }
-body {
-  background-image: url("https://i.pinimg.com/originals/c5/a1/be/c5a1be078020956ea40f933fef73d0c0.jpg");
-  background-repeat: no-repeat;
-  background-position: 0 0;
-  background-size: cover;
+.story {
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  position: absolute;
+  left: 35px;
 }

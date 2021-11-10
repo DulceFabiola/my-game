@@ -10,7 +10,7 @@ const monsterScareArray = [];
 let raton = {}; // las coordenadas del ratón
 let isGameOver = false;
 let points = 0;
-let monsterLife = 0;
+let alert3312 = 0;
 class GameAsset {
   constructor(x, y, width, height, img) {
     this.x = x;
@@ -68,6 +68,12 @@ class Character extends GameAsset {
   }
   moveRight() {
     this.x++;
+  }
+  moveUp() {
+    this.y--;
+  }
+  moveDown() {
+    this.y++;
   }
   isTouching(obj) {
     return (
@@ -147,16 +153,7 @@ const scareAudio = "../../sounds/grito-mounstruo.mp3";
 const gatitoAudio = "../../sounds/boo-gatito.mp3";
 const mikeAudio = "../../sounds/mike-wazowski.mp3";
 const gameOverAudio = "../../sounds/musical-game-over.wav";
-let monsterCanvas = new Character(
-  0,
-  canvas.height / 2,
-  100,
-  100,
-  monsterImage,
-  5,
-  5
-);
-let kidCanvas = new Kid(1100, 0, 100, 100, kidImage, 5, 5);
+let monsterCanvas = new Character(0, 100, 100, 100, monsterImage, 5, 5);
 const board = new Board(
   0,
   0,
@@ -197,11 +194,12 @@ function update() {
   resourcesMonster.draw();
   resourcesEnergy.draw();
   alertKid.draw();
+  printScore();
+  print3312();
   gameOver();
   requestAnimationFrame(update);
   //Inicia el grito
   printScares();
-  printScore();
 }
 
 function gameOver() {
@@ -220,13 +218,9 @@ function checkCollitions() {
     if (monsterCanvas.isTouching(kid)) {
       clearInterval(intervalId);
       isGameOver = true;
-      console.log("3312");
-      //monsterCanvas.receiveDamage(kidCanvas.attack());
     } else {
       monsterScareArray.forEach((scare, index) => {
         if (scare.isTouching(kid)) {
-          console.log("isTouching kid");
-          //kidCanvas.receiveDamage(scare.attack());
           kids.splice(i, 1);
           monsterScareArray.splice(index, 1);
           points += 25;
@@ -237,14 +231,16 @@ function checkCollitions() {
 }
 
 function generateKids() {
-  if (frames % 300 === 0) {
+  if (frames % 100 === 0) {
     const y = Math.floor(Math.random() * 380);
     let kid = new Kid(1100, y, 100, 100, kidImage);
     kids.push(kid);
   }
   // Nos aseguramos de solo tener los kids que se muestran en pantalla
   kids.forEach((kid, index) => {
-    if (kid.x + kid.width < 0) kids.splice(1, index);
+    if (kid.x + kid.width < 0) {
+      kids.splice(1, index);
+    }
   });
 }
 
@@ -264,10 +260,16 @@ function checkKeys() {
       case "ArrowRight":
         monsterCanvas.moveRight();
         break;
+      case "ArrowUp":
+        monsterCanvas.moveUp();
+        break;
+      case "ArrowDown":
+        monsterCanvas.moveDown();
+        break;
       case "q":
         const monsterScare = new Scare(
-          0,
-          canvas.height / 2,
+          monsterCanvas.x,
+          monsterCanvas.y,
           40,
           40,
           scareIcon,
@@ -290,6 +292,10 @@ function printScares() {
 function printScore() {
   context.font = "20px sans-serif";
   context.fillText(`SCORE:${points} W`, 160, 100);
+}
+function print3312() {
+  context.font = "20px sans-serif";
+  context.fillText(`ALERT 3312:${alert3312}`, 310, 100);
 }
 
 function generateMonster() {
