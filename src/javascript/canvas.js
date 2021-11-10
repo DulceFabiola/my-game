@@ -40,9 +40,11 @@ class Board extends GameAsset {
   }
 }
 
-class CharacterAsset extends GameAsset {
-  constructor(x, y, width, height, img) {
+class Character extends GameAsset {
+  constructor(x, y, width, height, img, health, strength) {
     super(x, y, width, height, img);
+    this.health = health;
+    this.strength = strength;
   }
 
   draw() {
@@ -64,21 +66,40 @@ class CharacterAsset extends GameAsset {
       this.y + this.height > obj.y
     );
   }
+  attack() {
+    return this.strength;
+  }
+  receiveDamage(damage) {
+    this.health -= damage;
+    if (this.health > 0) {
+      return `el monstruo ha recibido ${damage} puntos de daño`;
+    } else {
+      return `Tenemos un 3312`;
+    }
+  }
 }
 
-class KidAsset extends CharacterAsset {
-  constructor(x, y, width, height, img) {
-    super(x, y, width, height, img);
+class Kid extends Character {
+  constructor(x, y, width, height, img, health, strengt) {
+    super(x, y, width, height, img, health, strengt);
   }
   draw() {
     this.x--;
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
   }
+  receiveDamage(damage) {
+    this.health -= damage;
+    if (this.health > 0) {
+      return `El niño ha generado ${damage} puntos de energia`;
+    } else {
+      return `El niño se ha ido a dormir`;
+    }
+  }
 }
 
-class Scare extends GameAsset {
-  constructor(x, y, width, height, img, audio) {
-    super(x, y, width, height, img);
+class Scare extends Character {
+  constructor(x, y, width, height, img, audio, health, strengt) {
+    super(x, y, width, height, img, health, strengt);
     this.audio = new Audio();
     this.audio.src = audio;
   }
@@ -91,6 +112,14 @@ class Scare extends GameAsset {
   shootSound() {
     this.audio.volume = 0.2;
     this.audio.play();
+  }
+  isTouching(obj) {
+    return (
+      this.x < obj.x + obj.width &&
+      this.x + this.width > obj.x &&
+      this.y < obj.y + obj.height &&
+      this.y + this.height > obj.y
+    );
   }
 }
 // Instancias
@@ -105,15 +134,16 @@ const scareIcon = "../../images/sully-icon.png";
 const scareAudio = "../../sounds/grito-mounstruo.mp3";
 const gatitoAudio = "../../sounds/boo-gatito.mp3";
 const mikeAudio = "../../sounds/mike-wazowski.mp3";
-// let monster = new Character(20, 20);
-let monsterCanvas = new CharacterAsset(
+let monsterCanvas = new Character(
   0,
   canvas.height / 2,
   100,
   100,
-  monsterImage
+  monsterImage,
+  5,
+  5
 );
-let kidCanvas = new KidAsset(1100, 0, 100, 100, kidImage);
+let kidCanvas = new Kid(1100, 0, 100, 100, kidImage, 5, 5);
 const board = new Board(0, 0, canvas.width, canvas.height, boardImage);
 const resourcesMonster = new GameAsset(30, 10, 80, 80, monsterIcon);
 const resourcesEnergy = new GameAsset(180, 10, 80, 80, energyIcon);
@@ -139,9 +169,9 @@ function update() {
   resourcesEnergy.draw();
   alertKid.draw();
   requestAnimationFrame(update);
-  printScares();
 
   //Inicia el grito
+  printScares();
 }
 
 // Funciones de apoyo
@@ -149,7 +179,15 @@ function update() {
 function checkCollitions() {
   kids.forEach((kid) => {
     if (monsterCanvas.isTouching(kid)) {
-      console.log("Tenemos un 3312");
+      console.log("3312");
+      monsterCanvas.receiveDamage(kidCanvas.attack());
+    } else {
+      monsterScareArray.forEach((scare) => {
+        if (scare.isTouching(kid)) {
+          console.log("isTouching kid");
+          kidCanvas.receiveDamage(scare.attack());
+        }
+      });
     }
   });
 }
@@ -157,7 +195,7 @@ function checkCollitions() {
 function generateKids() {
   if (frames % 500 === 0) {
     const y = Math.floor(Math.random() * 380);
-    let kid = new KidAsset(1100, y, 100, 100, kidImage);
+    let kid = new Kid(1100, y, 100, 100, kidImage);
     kids.push(kid);
   }
 }
@@ -185,7 +223,9 @@ function checkKeys() {
           40,
           40,
           scareIcon,
-          scareAudio
+          scareAudio,
+          5,
+          5
         );
         monsterScare.shootSound();
         monsterScareArray.push(monsterScare);
@@ -204,12 +244,12 @@ function generateMonster() {
 }
 // Interaccion de usuarios
 
-startGameButton.onclick = start;
-
+//startGameButton.onclick = start;
+start();
 //Detectar click dentro del canvas
 canvas.addEventListener("click", (event) => {
   const raton = oMousePos(canvas, event);
-  //console.log("has hecho click en", raton);
+  // console.log("has hecho click en", raton);
   //context.isPointInPath(raton.x, raton.y)
   if (16 <= raton.x <= 70 && 16 <= raton.y <= 50) {
     //generateMonster();
