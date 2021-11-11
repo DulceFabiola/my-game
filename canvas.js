@@ -235,7 +235,6 @@ function generateScare(x, y) {
   const monsterScare = new Scare(x, y, 40, 40, scareIcon, scareAudio);
   monsterScare.shootSound();
   monsterScareArray.push(monsterScare);
-  console.log("here");
 }
 function printScares() {
   monsterScareArray.forEach((monsterScare) => monsterScare.draw());
