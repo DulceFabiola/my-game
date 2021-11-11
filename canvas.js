@@ -198,7 +198,7 @@ function gameOver() {
     //boardGameOver.shootSound();
     boardGameOver.draw();
     setTimeout(() => {
-      document.location.reload();
+      location.reload();
     }, 5000);
   }
 }
@@ -213,7 +213,7 @@ function youWin() {
       canvas.height - 100
     );
     setTimeout(() => {
-      document.location.reload();
+      location.reload();
     }, 5000);
   }
 }
