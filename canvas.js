@@ -9,8 +9,9 @@ const kids = [];
 const monsterScareArray = [];
 let raton = {}; // las coordenadas del ratón
 let isGameOver = false;
-let points = 0;
+let points = 200;
 let alert3312 = 0;
+const monsters = [];
 class GameAsset {
   constructor(x, y, width, height, img) {
     this.x = x;
@@ -52,10 +53,8 @@ class Board extends GameAsset {
 }
 
 class Character extends GameAsset {
-  constructor(x, y, width, height, img, health, strength) {
+  constructor(x, y, width, height, img) {
     super(x, y, width, height, img);
-    this.health = health;
-    this.strength = strength;
   }
 
   draw() {
@@ -83,40 +82,21 @@ class Character extends GameAsset {
       this.y + this.height > obj.y
     );
   }
-  attack() {
-    return this.strength;
-  }
-  receiveDamage(damage) {
-    this.health -= damage;
-    if (this.health > 0) {
-      return `el monstruo ha recibido ${damage} puntos de daño`;
-    } else {
-      return `Tenemos un 3312`;
-    }
-  }
 }
 
 class Kid extends Character {
-  constructor(x, y, width, height, img, health, strengt) {
-    super(x, y, width, height, img, health, strengt);
+  constructor(x, y, width, height, img) {
+    super(x, y, width, height, img);
   }
   draw() {
     this.x--;
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
   }
-  receiveDamage(damage) {
-    this.health -= damage;
-    if (this.health > 0) {
-      return `El niño ha generado ${damage} puntos de energia`;
-    } else {
-      return `El niño se ha ido a dormir`;
-    }
-  }
 }
 
 class Scare extends Character {
-  constructor(x, y, width, height, img, audio, health, strengt) {
-    super(x, y, width, height, img, health, strengt);
+  constructor(x, y, width, height, img, audio) {
+    super(x, y, width, height, img);
     this.audio = new Audio();
     this.audio.src = audio;
   }
@@ -153,7 +133,6 @@ const scareAudio = "../../sounds/grito-mounstruo.mp3";
 const gatitoAudio = "../../sounds/boo-gatito.mp3";
 const mikeAudio = "../../sounds/mike-wazowski.mp3";
 const gameOverAudio = "../../sounds/musical-game-over.wav";
-let monsterCanvas = new Character(0, 100, 100, 100, monsterImage, 5, 5);
 const board = new Board(
   0,
   0,
@@ -173,6 +152,7 @@ const boardGameOver = new Board(
 const resourcesMonster = new GameAsset(30, 10, 80, 80, monsterIcon);
 const resourcesEnergy = new GameAsset(180, 10, 80, 80, energyIcon);
 const alertKid = new GameAsset(320, 10, 80, 80, alert);
+
 // funciones principales
 function start() {
   if (intervalId) return;
@@ -182,20 +162,20 @@ function start() {
 function update() {
   // 1. calcular o recalcular el estado
   frames++;
-  checkKeys();
   generateKids();
+  //generateScare();
   checkCollitions();
   // 2. Limpiar el canvas
   clearCanvas();
   // 3. Dibujar los elementos
   board.draw();
-  monsterCanvas.draw();
   drawKids();
   resourcesMonster.draw();
   resourcesEnergy.draw();
   alertKid.draw();
   printScore();
   print3312();
+  drawMonsters();
   requestAnimationFrame(update);
   //Inicia el grito
   printScares();
@@ -213,25 +193,8 @@ function gameOver() {
 }
 // Funciones de apoyo
 
-function checkCollitions() {
-  kids.forEach((kid, i) => {
-    if (monsterCanvas.isTouching(kid)) {
-      clearInterval(intervalId);
-      isGameOver = true;
-    } else {
-      monsterScareArray.forEach((scare, index) => {
-        if (scare.isTouching(kid)) {
-          kids.splice(i, 1);
-          monsterScareArray.splice(index, 1);
-          points += 25;
-        }
-      });
-    }
-  });
-}
-
 function generateKids() {
-  if (frames % 100 === 0) {
+  if (frames % 500 === 0) {
     const y = Math.floor(Math.random() * 380);
     let kid = new Kid(1100, y, 100, 100, kidImage);
     kids.push(kid);
@@ -247,46 +210,62 @@ function generateKids() {
 function drawKids() {
   kids.forEach((kid) => kid.draw());
 }
-function clearCanvas() {
-  context.clearRect(0, 0, canvas.width, canvas.height);
+function generateMonster(x, y) {
+  let monsterCanvas = new Character(x, y, 100, 100, monsterImage);
+  monsters.push(monsterCanvas);
+  generateScare(x, y);
+  points -= 50;
+}
+function drawMonsters() {
+  monsters.forEach((monster) => {
+    if (points >= 50) {
+      monster.draw();
+    } else {
+      context.font = "40px sans-serif";
+      context.fillText(
+        `Energía insuficiente para llamar a un monstruo`,
+        canvas.width / 6,
+        canvas.height / 2
+      );
+    }
+  });
 }
 
-function checkKeys() {
-  document.onkeydown = (event) => {
-    switch (event.key) {
-      case "ArrowLeft":
-        monsterCanvas.moveLeft();
-        break;
-      case "ArrowRight":
-        monsterCanvas.moveRight();
-        break;
-      case "ArrowUp":
-        monsterCanvas.moveUp();
-        break;
-      case "ArrowDown":
-        monsterCanvas.moveDown();
-        break;
-      case "q":
-        const monsterScare = new Scare(
-          monsterCanvas.x,
-          monsterCanvas.y,
-          40,
-          40,
-          scareIcon,
-          scareAudio,
-          5,
-          5
-        );
-        monsterScare.shootSound();
-        monsterScareArray.push(monsterScare);
-        break;
-      default:
-        break;
-    }
-  };
+function generateScare(x, y) {
+  const monsterScare = new Scare(x, y, 40, 40, scareIcon, scareAudio);
+  monsterScare.shootSound();
+  monsterScareArray.push(monsterScare);
+  console.log("here");
 }
 function printScares() {
   monsterScareArray.forEach((monsterScare) => monsterScare.draw());
+}
+
+function checkCollitions() {
+  kids.forEach((kid, i) => {
+    monsters.forEach((monster, index) => {
+      if (monster.isTouching(kid)) {
+        kids.splice(i, 1);
+        monsters.splice(index, 1);
+        points -= 25;
+      } else {
+        monsterScareArray.forEach((scare, index) => {
+          if (scare.isTouching(kid)) {
+            kids.splice(i, 1);
+            monsterScareArray.splice(index, 1);
+            points += 25;
+          }
+        });
+      }
+    });
+  });
+  if (points <= 0) {
+    clearInterval(intervalId);
+    isGameOver = true;
+  }
+}
+function clearCanvas() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function printScore() {
@@ -298,29 +277,19 @@ function print3312() {
   context.fillText(`ALERT 3312:${alert3312}`, 310, 100);
 }
 
-function generateMonster() {
-  console.log("create monster");
-}
 // Interaccion de usuarios
 
 startGameButton.onclick = start;
-//start();
 
 //Detectar click dentro del canvas
 canvas.addEventListener("click", (event) => {
   const raton = oMousePos(canvas, event);
-  // console.log("has hecho click en", raton);
-  //context.isPointInPath(raton.x, raton.y)
-  if (16 <= raton.x <= 70 && 16 <= raton.y <= 50) {
-    //generateMonster();
-  } else {
-    // console.log("algo mas");
-  }
+  generateMonster(raton.x, raton.y);
 });
 
-// una función para recuperar las coordenadas del ratón
+// función para recuperar las coordenadas del ratón
 function oMousePos(canvas, event) {
-  //Return the size of an element and its position relative to the viewport:
+  // regresa el tamaño de un elemento y lo posiciona relativamente al viewport
   let ClientRect = canvas.getBoundingClientRect();
   return {
     x: Math.round(event.clientX - ClientRect.left),
