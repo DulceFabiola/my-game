@@ -1,3 +1,4 @@
+//Definición variables DOM
 const canvas = document.querySelector("canvas");
 const context = canvas.getContext("2d");
 const startGameButton = document.getElementById("start-game-button");
@@ -7,11 +8,25 @@ let intervalId;
 let frames = 0;
 const kids = [];
 const monsterScareArray = [];
-let raton = {}; // las coordenadas del ratón
+let raton = {}; // guardar las coordenadas del ratón
 let isGameOver = false;
 let points = 400;
 let alert3312 = 0;
 const monsters = [];
+const boardImage = "https://opengameart.org/sites/default/files/Brick_03.png";
+const gameOverImage = "/images/game-over.jpg";
+const youWinImage = "/images/you-win.jpg";
+const monsterImage = "/images/mike.png";
+const kidImage = "/images/boo.png";
+const monsterIcon = "/images/monster-coin.png";
+const energyIcon = "/images/energy-icon.png";
+const alert = "/images/3312.png";
+const scareIcon = "/images/sully-icon.png";
+const scareAudio = "../../sounds/grito-mounstruo.mp3";
+const gatitoAudio = "../../sounds/boo-gatito.mp3";
+const gameOverAudio = "../../sounds/musical-game-over.wav";
+
+//Generacion de clases
 class GameAsset {
   constructor(x, y, width, height, img) {
     this.x = x;
@@ -34,7 +49,6 @@ class Board extends GameAsset {
   }
 
   draw() {
-    // this.x--;
     if (this.x < -this.width) this.x = 0;
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
     context.drawImage(
@@ -58,7 +72,6 @@ class Character extends GameAsset {
   }
 
   draw() {
-    // this.y = canvas.height - this.height;
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
   }
 
@@ -119,21 +132,7 @@ class Scare extends Character {
     );
   }
 }
-// Instancias
-const boardImage = "https://opengameart.org/sites/default/files/Brick_03.png";
-const gameOverImage = "/images/game-over.jpg";
-const youWinImage = "/images/you-win.jpg";
-const monsterImage = "/images/mike.png";
-const kidImage = "/images/boo.png";
-const kidCoin = "/images/kid-coin.png";
-const monsterIcon = "/images/monster-coin.png";
-const energyIcon = "/images/energy-icon.png";
-const alert = "/images/3312.png";
-const scareIcon = "/images/sully-icon.png";
-const scareAudio = "../../sounds/grito-mounstruo.mp3";
-const gatitoAudio = "../../sounds/boo-gatito.mp3";
-const mikeAudio = "../../sounds/mike-wazowski.mp3";
-const gameOverAudio = "../../sounds/musical-game-over.wav";
+// Instancias de las clases
 const board = new Board(
   0,
   0,
@@ -172,7 +171,6 @@ function update() {
   // 1. calcular o recalcular el estado
   frames++;
   generateKids();
-  //generateScare();
   checkCollitions();
   // 2. Limpiar el canvas
   clearCanvas();
@@ -186,7 +184,6 @@ function update() {
   print3312();
   drawMonsters();
   requestAnimationFrame(update);
-  //Inicia el grito
   printScares();
   gameOver();
   youWin();
@@ -195,7 +192,6 @@ function update() {
 // Funciones de apoyo
 function gameOver() {
   if (isGameOver) {
-    //boardGameOver.shootSound();
     boardGameOver.draw();
     setTimeout(() => {
       document.location.reload();
@@ -303,7 +299,6 @@ function print3312() {
 }
 
 // Interaccion de usuarios
-
 startGameButton.onclick = start;
 
 //Detectar click dentro del canvas
