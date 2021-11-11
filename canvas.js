@@ -284,7 +284,7 @@ function checkCollitions() {
       }
     });
   });
-  if (points <= 0) {
+  if (points <= 0 || alert3312 >= 5) {
     clearInterval(intervalId);
     isGameOver = true;
   }
