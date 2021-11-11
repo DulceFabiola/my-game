@@ -182,6 +182,7 @@ function start() {
 function update() {
   // 1. calcular o recalcular el estado
   frames++;
+  gameOver();
   checkKeys();
   generateKids();
   checkCollitions();
@@ -199,7 +200,6 @@ function update() {
   requestAnimationFrame(update);
   //Inicia el grito
   printScares();
-  gameOver();
 }
 
 function gameOver() {
