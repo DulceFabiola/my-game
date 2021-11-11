@@ -196,10 +196,10 @@ function update() {
   alertKid.draw();
   printScore();
   print3312();
-  gameOver();
   requestAnimationFrame(update);
   //Inicia el grito
   printScares();
+  gameOver();
 }
 
 function gameOver() {
