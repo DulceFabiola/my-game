@@ -9,7 +9,7 @@ const kids = [];
 const monsterScareArray = [];
 let raton = {}; // las coordenadas del ratón
 let isGameOver = false;
-let points = 200;
+let points = 300;
 let alert3312 = 0;
 const monsters = [];
 class GameAsset {
@@ -248,6 +248,7 @@ function checkCollitions() {
         kids.splice(i, 1);
         monsters.splice(index, 1);
         points -= 25;
+        alert3312++;
       } else {
         monsterScareArray.forEach((scare, index) => {
           if (scare.isTouching(kid)) {
