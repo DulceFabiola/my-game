@@ -9,7 +9,7 @@ const kids = [];
 const monsterScareArray = [];
 let raton = {}; // las coordenadas del ratón
 let isGameOver = false;
-let points = 300;
+let points = 400;
 let alert3312 = 0;
 const monsters = [];
 class GameAsset {
@@ -122,6 +122,7 @@ class Scare extends Character {
 // Instancias
 const boardImage = "https://opengameart.org/sites/default/files/Brick_03.png";
 const gameOverImage = "/images/game-over.jpg";
+const youWinImage = "/images/you-win.jpg";
 const monsterImage = "/images/mike.png";
 const kidImage = "/images/boo.png";
 const kidCoin = "/images/kid-coin.png";
@@ -147,6 +148,14 @@ const boardGameOver = new Board(
   canvas.width,
   canvas.height,
   gameOverImage,
+  gameOverAudio
+);
+const boardYouWin = new Board(
+  0,
+  0,
+  canvas.width,
+  canvas.height,
+  youWinImage,
   gameOverAudio
 );
 const resourcesMonster = new GameAsset(30, 10, 80, 80, monsterIcon);
@@ -180,8 +189,10 @@ function update() {
   //Inicia el grito
   printScares();
   gameOver();
+  youWin();
 }
 
+// Funciones de apoyo
 function gameOver() {
   if (isGameOver) {
     //boardGameOver.shootSound();
@@ -191,10 +202,24 @@ function gameOver() {
     }, 5000);
   }
 }
-// Funciones de apoyo
+function youWin() {
+  if (points >= 500) {
+    boardYouWin.draw();
+    context.font = "40px sans-serif";
+    context.fillStyle = "white";
+    context.fillText(
+      `Has mandado a dormir a todos los niños, HAS GANADO`,
+      canvas.width / 8,
+      canvas.height - 100
+    );
+    setTimeout(() => {
+      document.location.reload();
+    }, 5000);
+  }
+}
 
 function generateKids() {
-  if (frames % 200 === 0) {
+  if (frames % 500 === 0) {
     const y = Math.floor(Math.random() * 380);
     let kid = new Kid(1100, y, 100, 100, kidImage);
     kids.push(kid);
@@ -214,11 +239,11 @@ function generateMonster(x, y) {
   let monsterCanvas = new Character(x, y, 100, 100, monsterImage);
   monsters.push(monsterCanvas);
   generateScare(x, y);
-  points -= 50;
+  points -= 20;
 }
 function drawMonsters() {
   monsters.forEach((monster) => {
-    if (points >= 50) {
+    if (points >= 20) {
       monster.draw();
     } else {
       context.font = "40px sans-serif";
@@ -246,14 +271,14 @@ function checkCollitions() {
       if (monster.isTouching(kid)) {
         kids.splice(i, 1);
         monsters.splice(index, 1);
-        points -= 25;
+        points -= 5;
         alert3312++;
       } else {
         monsterScareArray.forEach((scare, index) => {
           if (scare.isTouching(kid)) {
             kids.splice(i, 1);
             monsterScareArray.splice(index, 1);
-            points += 25;
+            points += 50;
           }
         });
       }
