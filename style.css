@@ -18,5 +18,9 @@ canvas {
   margin: 0 auto;
   justify-content: center;
   position: absolute;
-  left: 35px;
+  left: 80px;
+  top: 476px;
+}
+.list-group-item {
+  font-size: 15px;
 }
