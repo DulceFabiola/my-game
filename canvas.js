@@ -204,7 +204,7 @@ function update() {
 
 function gameOver() {
   if (isGameOver) {
-    boardGameOver.shootSound();
+    //boardGameOver.shootSound();
     boardGameOver.draw();
     setTimeout(() => {
       document.location.reload();
