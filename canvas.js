@@ -194,7 +194,7 @@ function gameOver() {
 // Funciones de apoyo
 
 function generateKids() {
-  if (frames % 500 === 0) {
+  if (frames % 200 === 0) {
     const y = Math.floor(Math.random() * 380);
     let kid = new Kid(1100, y, 100, 100, kidImage);
     kids.push(kid);
