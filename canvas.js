@@ -17,6 +17,8 @@ const boardImage = "https://opengameart.org/sites/default/files/Brick_03.png";
 const gameOverImage = "/images/game-over.jpg";
 const youWinImage = "/images/you-win.jpg";
 const monsterImage = "/images/mike.png";
+const sullyImage = "/images/sullivan.png";
+const randallImage = "/images/randall.png";
 const kidImage = "/images/boo.png";
 const monsterIcon = "/images/monster-coin.png";
 const energyIcon = "/images/energy-icon.png";
@@ -25,7 +27,7 @@ const scareIcon = "/images/sully-icon.png";
 const scareAudio = "../../sounds/grito-mounstruo.mp3";
 const gatitoAudio = "../../sounds/boo-gatito.mp3";
 const gameOverAudio = "../../sounds/musical-game-over.wav";
-
+const monsterImageArray = [monsterImage, sullyImage, randallImage];
 //Generacion de clases
 class GameAsset {
   constructor(x, y, width, height, img) {
@@ -194,7 +196,7 @@ function gameOver() {
   if (isGameOver) {
     boardGameOver.draw();
     setTimeout(() => {
-      document.location.reload();
+      location.reload();
     }, 5000);
   }
 }
@@ -209,7 +211,7 @@ function youWin() {
       canvas.height - 100
     );
     setTimeout(() => {
-      document.location.reload();
+      location.reload();
     }, 5000);
   }
 }
@@ -232,7 +234,9 @@ function drawKids() {
   kids.forEach((kid) => kid.draw());
 }
 function generateMonster(x, y) {
-  let monsterCanvas = new Character(x, y, 100, 100, monsterImage);
+  const monsterImg =
+    monsterImageArray[Math.floor(Math.random() * monsterImageArray.length)];
+  let monsterCanvas = new Character(x, y, 100, 100, monsterImg);
   monsters.push(monsterCanvas);
   generateScare(x, y);
   points -= 20;
