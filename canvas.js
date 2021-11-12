@@ -157,7 +157,7 @@ const boardYouWin = new Board(
   canvas.width,
   canvas.height,
   youWinImage,
-  gameOverAudio
+  gatitoAudio
 );
 const resourcesMonster = new GameAsset(30, 10, 80, 80, monsterIcon);
 const resourcesEnergy = new GameAsset(180, 10, 80, 80, energyIcon);
