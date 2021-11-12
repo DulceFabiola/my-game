@@ -10,7 +10,7 @@ const kids = [];
 const monsterScareArray = [];
 let raton = {}; // guardar las coordenadas del ratón
 let isGameOver = false;
-let points = 400;
+let points = 150;
 let alert3312 = 0;
 const monsters = [];
 const boardImage = "https://opengameart.org/sites/default/files/Brick_03.png";
@@ -199,7 +199,7 @@ function gameOver() {
   }
 }
 function youWin() {
-  if (points >= 500) {
+  if (points >= 250) {
     boardYouWin.draw();
     context.font = "40px sans-serif";
     context.fillStyle = "white";
@@ -215,7 +215,7 @@ function youWin() {
 }
 
 function generateKids() {
-  if (frames % 500 === 0) {
+  if (frames % 400 === 0) {
     const y = Math.floor(Math.random() * 380);
     let kid = new Kid(1100, y, 100, 100, kidImage);
     kids.push(kid);
@@ -280,7 +280,7 @@ function checkCollitions() {
       }
     });
   });
-  if (points <= 0 || alert3312 >= 5) {
+  if (points <= 0 || alert3312 >= 3) {
     clearInterval(intervalId);
     isGameOver = true;
   }
