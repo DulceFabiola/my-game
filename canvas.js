@@ -195,9 +195,10 @@ function update() {
 function gameOver() {
   if (isGameOver) {
     boardGameOver.draw();
+    boardGameOver.shootSound();
     setTimeout(() => {
       location.reload();
-    }, 5000);
+    }, 2000);
   }
 }
 function youWin() {
@@ -212,7 +213,7 @@ function youWin() {
     );
     setTimeout(() => {
       location.reload();
-    }, 5000);
+    }, 2000);
   }
 }
 
