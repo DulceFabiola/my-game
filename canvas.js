@@ -28,6 +28,8 @@ const scareAudio = "../../sounds/grito-mounstruo.mp3";
 const gatitoAudio = "../../sounds/boo-gatito.mp3";
 const gameOverAudio = "../../sounds/musical-game-over.wav";
 const monsterImageArray = [monsterImage, sullyImage, randallImage];
+let level = 1;
+let speedKid = 400;
 //Generacion de clases
 class GameAsset {
   constructor(x, y, width, height, img) {
@@ -172,6 +174,8 @@ function start() {
 function update() {
   // 1. calcular o recalcular el estado
   frames++;
+  gameOver();
+  youWin();
   generateKids();
   checkCollitions();
   // 2. Limpiar el canvas
@@ -184,6 +188,7 @@ function update() {
   alertKid.draw();
   printScore();
   print3312();
+  printLevel();
   drawMonsters();
   requestAnimationFrame(update);
   printScares();
@@ -202,6 +207,9 @@ function gameOver() {
 }
 function youWin() {
   if (points >= 250) {
+    level = 2;
+  }
+  if (points >= 350) {
     boardYouWin.draw();
     context.font = "40px sans-serif";
     context.fillStyle = "white";
@@ -217,7 +225,10 @@ function youWin() {
 }
 
 function generateKids() {
-  if (frames % 400 === 0) {
+  if (level > 1) {
+    speedKid = 100;
+  }
+  if (frames % speedKid === 0) {
     const y = Math.floor(Math.random() * 380);
     let kid = new Kid(1100, y, 100, 100, kidImage);
     kids.push(kid);
@@ -295,11 +306,18 @@ function clearCanvas() {
 
 function printScore() {
   context.font = "20px sans-serif";
+  context.fillStyle = "white";
   context.fillText(`SCORE:${points} W`, 160, 100);
 }
 function print3312() {
   context.font = "20px sans-serif";
+  context.fillStyle = "white";
   context.fillText(`ALERT 3312:${alert3312}`, 310, 100);
+}
+function printLevel() {
+  context.font = "20px sans-serif";
+  context.fillStyle = "white";
+  context.fillText(`LEVEL:${level}`, 30, 100);
 }
 
 // Interaccion de usuarios
