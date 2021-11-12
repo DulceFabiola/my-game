@@ -25,7 +25,7 @@ const energyIcon = "/images/energy-icon.png";
 const alert = "/images/3312.png";
 const scareIcon = "/images/sully-icon.png";
 const scareAudio = "../../sounds/grito-mounstruo.mp3";
-const gatitoAudio = "../../sounds/boo-gatito.mp3";
+const winAudio = "../../sounds/mike-wazowski.mp3";
 const gameOverAudio = "../../sounds/musical-game-over.wav";
 const monsterImageArray = [monsterImage, sullyImage, randallImage];
 //Generacion de clases
@@ -157,7 +157,7 @@ const boardYouWin = new Board(
   canvas.width,
   canvas.height,
   youWinImage,
-  gatitoAudio
+  winAudio
 );
 const resourcesMonster = new GameAsset(30, 10, 80, 80, monsterIcon);
 const resourcesEnergy = new GameAsset(180, 10, 80, 80, energyIcon);
