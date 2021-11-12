@@ -17,7 +17,6 @@ const boardImage = "https://opengameart.org/sites/default/files/Brick_03.png";
 const gameOverImage = "/images/game-over.jpg";
 const youWinImage = "/images/you-win.jpg";
 const monsterImage = "/images/mike.png";
-const sullyImage = "/images/sully.png";
 const kidImage = "/images/boo.png";
 const monsterIcon = "/images/monster-coin.png";
 const energyIcon = "/images/energy-icon.png";
@@ -233,7 +232,7 @@ function drawKids() {
   kids.forEach((kid) => kid.draw());
 }
 function generateMonster(x, y) {
-  let monsterCanvas = new Character(x, y, 150, 150, sullyImage);
+  let monsterCanvas = new Character(x, y, 100, 100, monsterImage);
   monsters.push(monsterCanvas);
   generateScare(x, y);
   points -= 20;
