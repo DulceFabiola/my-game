@@ -196,9 +196,10 @@ function gameOver() {
   if (isGameOver) {
     boardGameOver.draw();
     boardGameOver.shootSound();
-    setTimeout(() => {
-      location.reload();
-    }, 2000);
+    location.reload();
+    // setTimeout(() => {
+    //   location.reload();
+    // }, 2000);
   }
 }
 function youWin() {
