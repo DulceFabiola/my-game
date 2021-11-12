@@ -195,14 +195,14 @@ function update() {
 function gameOver() {
   if (isGameOver) {
     boardGameOver.draw();
-    boardGameOver.shootSound();
-    location.reload();
+    setTimeout(() => {
+      location.reload();
+    }, 5000);
   }
 }
 function youWin() {
   if (points >= 250) {
     boardYouWin.draw();
-    boardYouWin.shootSound();
     context.font = "40px sans-serif";
     context.fillStyle = "white";
     context.fillText(
@@ -210,7 +210,9 @@ function youWin() {
       canvas.width / 8,
       canvas.height - 100
     );
-    location.reload();
+    setTimeout(() => {
+      location.reload();
+    }, 5000);
   }
 }
 
